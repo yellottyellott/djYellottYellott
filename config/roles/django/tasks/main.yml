@@ -1,0 +1,14 @@
+---
+- name: Install django packages.
+  apt: name={{ item }} state=installed
+  with_items:
+    - python-dev
+    - python-pip
+    - supervisor
+    - git
+
+- name: Upload pip env vars to profile.d.
+  action: template src=pip.sh dest=/etc/profile.d/php.sh
+
+- name: Install virtualenv
+  pip: name=virtualenv

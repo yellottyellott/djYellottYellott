@@ -1,0 +1,9 @@
+Django==1.7
+
+ipython
+ipdb
+
+fabric==1.9.0
+ansible==1.6.10
+newrelic==2.22.1.20
+gunicorn==19.1.0

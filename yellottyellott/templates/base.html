@@ -1,0 +1,23 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Erick Yellott | A boy and his laptop.</title>
+    <meta name="description" content="I'm a web developer in Austin. Hi, I'm Erick.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="{% static 'css/main.min.css.gz' %}">
+</head>
+<body>
+
+    {% block content %}
+    <main>
+        <p>Put something here.</p>
+    </main>
+    {% endblock content %}
+
+</body>
+</html>
