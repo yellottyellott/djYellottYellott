@@ -1,3 +1,0 @@
----
-- name: Install redis.
-  apt: pkg=redis-server
