@@ -1,0 +1,43 @@
+---
+- name: add sslmate apt key
+  apt_key:
+    url: https://sslmate.com/apt/jessie/sslmate.gpg
+    state: present
+  become: true
+
+- name: add sslmate apt repo
+  apt_repository:
+    repo: deb http://packages.sslmate.com/debian jessie main
+    state: present
+    filename: 'sslmate'
+  become: true
+
+- name: install sslmate packages
+  apt:
+    name: "{{ item }}"
+    state: installed
+  become: true
+  with_items:
+    - ca-certificates
+    - sslmate
+
+- name: install sslmate config
+  template:
+    src: sslmate.conf
+    dest: /etc/sslmate.conf
+  become: true
+
+# rc 0 when downloaded, 10 if nothing needs to be changed
+- name: download ssl cert
+  command: sslmate download *.yellottyellott.com
+  register: new_cert
+  failed_when: "new_cert.rc != 0 and new_cert.rc != 10"
+  changed_when: "new_cert.rc != 10"
+  notify: reload nginx
+  become: true
+
+- name: install ssl private key
+  copy:
+    src: "*.yellottyellott.com.key"
+    dest: "/etc/sslmate/*.yellottyellott.com.key"
+  become: true

@@ -1,0 +1,70 @@
+---
+- name: add operators group
+  group:
+    name: operators
+    state: present
+  become: true
+
+- name: add users
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    shell: /bin/bash
+    groups: operators
+  with_items: "{{ users }}"
+  become: true
+
+- name: configure sudoers
+  copy:
+    content: "%operators ALL=(ALL:ALL) ALL"
+    dest: /etc/sudoers.d/operators
+    mode: 0440
+    owner: root
+    group: root
+  become: true
+
+- name: configure sshd
+  template:
+    src=sshd_config.j2
+    dest=/etc/ssh/sshd_config
+    mode=0500
+  notify: restart ssh
+  become: true
+
+- name: add ssh keys
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.public_key }}"
+  with_items: "{{ users }}"
+  become: true
+
+- name: install base packages
+  apt:
+    name: "{{ item }}"
+    state: installed
+    update_cache: true
+    cache_valid_time: 86400
+  become: true
+  with_items:
+    - fail2ban
+    - vim
+    - curl
+
+- name: add project dir
+  file:
+    path: /srv/yellottyellott
+    state: directory
+    owner: yellottyellott
+    group: operators
+    mode: g+s
+  become: true
+
+- name: add deployment dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: yellottyellott
+  with_items:
+    - /srv/yellottyellott/nginx
+    - /srv/yellottyellott/releases
+  become: true

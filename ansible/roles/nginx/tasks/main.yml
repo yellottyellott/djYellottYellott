@@ -1,0 +1,30 @@
+---
+- name: install nginx
+  apt:
+    name: nginx
+    state: installed
+  become: true
+
+- name: copy nginx conf
+  copy:
+    src: nginx.conf
+    dest: /srv/yellottyellott/nginx/nginx.conf
+    owner: yellottyellott
+  notify: reload nginx
+  become: true
+
+- name: link sites-available
+  file:
+    src: /srv/yellottyellott/nginx/nginx.conf
+    dest: /etc/nginx/sites-available/yellottyellott
+    state: link
+  become: true
+
+- name: link sites-enabled
+  file:
+    src: /etc/nginx/sites-available/yellottyellott
+    dest: /etc/nginx/sites-enabled/yellottyellott
+    state: link
+    force: true
+  notify: reload nginx
+  become: true

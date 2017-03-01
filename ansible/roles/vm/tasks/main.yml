@@ -1,0 +1,7 @@
+---
+- name: link synced folder
+  file:
+    src: /vagrant/src
+    dest: /srv/yellottyellott/releases/current
+    state: link
+  become: true
