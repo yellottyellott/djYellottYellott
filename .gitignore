@@ -1,2 +1,6 @@
 /.vagrant
-*.retry
+ansible/*.retry
+ansible/vault-password.txt
+terraform/**/terraform.tfstate.backup
+terraform/account.json
+.terraform

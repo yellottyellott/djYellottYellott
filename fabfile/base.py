@@ -3,80 +3,78 @@
 Usage:
     fab ENVIRONMENT TASK
 
-    $ fab development provision
-    $ fab development ping
+    $ fab development provision deploy
     $ fab development deploy
 """
 import re
 
-from fabric.api import task, env, local, run
+from fabric.api import env, task, local, run, puts, abort, cd, put, settings, hide
 from fabric.contrib.console import confirm
-from fabric.utils import puts, abort
-from fabric.operations import put
-from fabric.context_managers import cd, shell_env
+
+from . import terraform, ansible
 
 
 env.user = 'yellottyellott'
 env.use_ssh_config = True
-env.inventory = ''
-env.playbook = 'ansible/site.yml'
 
 
-@task
-def development():
+@task(alias='dev', default=True)
+def dev():
     """Use development settings."""
-    env.name = 'development'
+    env.name = 'dev'
     env.hosts = ['dev.yellottyellott.com']
-    env.inventory = 'ansible/inventories/development'
+    env.inventory = 'inventories/dev'
 
 
-@task
-def staging():
-    """Use staging settings."""
-    env.name = "staging"
-    env.hosts = ['staging.yellottyellott.com']
-    env.inventory = 'ansible/inventories/staging'
+@task()
+def stage():
+    """Use stage settings."""
+    env.name = "stage"
+    env.hosts = ['stage.yellottyellott.com']
+    env.inventory = 'inventories/stage'
 
 
-@task
-def production():
-    """Use production settings."""
+@task()
+def prod():
+    """Use prod settings."""
     prompt = ("You are trying to execute a command on PRODUCTION.\n"
               "Are you sure you want to do this?")
     if not confirm(question=prompt, default=False):
-        abort("Cancelled by user.")
+        abort("Canceled.")
 
-    env.name = "production"
+    env.name = "prod"
     env.hosts = ['yellottyellott.com']
-    env.inventory = 'ansible/inventories/production'
+    env.inventory = 'inventories/prod'
 
 
 @task
-def ping():
-    """Ping host."""
-    cmd = "ansible --inventory-file {} --one-line all -m ping"
-    cmd = cmd.format(env.inventory)
-    with shell_env(ANSIBLE_CONFIG='ansible/ansible.cfg'):
-        local(cmd)
+def provision(default=True):
+    """Create and provision infra."""
+    with ansible.vault_file():
+        terraform.terraform()
+        ansible.ansible()
 
 
 @task
-def provision():
-    """Provision host with ansible-playbook."""
-    cmd = "ansible-playbook --inventory-file {} --ask-become-pass --ask-vault-pass {}"
-    cmd = cmd.format(env.inventory, env.playbook)
-    with shell_env(ANSIBLE_CONFIG='ansible/ansible.cfg'):
-        local(cmd)
-
-
-@task
-def build(treeish="head"):
+def build(treeish='head'):
     """Build a release."""
     version = local("git describe {}".format(treeish), capture=True)
 
-    is_pushed = local("git branch -r --contains {}".format(version), capture=True)
+    with settings(hide('warnings'), warn_only=True):
+        cmd = "git diff-index --quiet {} --".format(treeish)
+        is_committed = local(cmd).succeeded
+        cmd = "git branch -r --contains {}".format(version)
+        is_pushed = local(cmd, capture=True)
+
+    if not is_committed:
+        prompt = "Uncommitted changes. Continue?"
+        if not confirm(prompt, default=False):
+            abort("Canceled.")
+
     if not is_pushed:
-        abort("Commit not pushed to remote repository.")
+        prompt = "Commit not pushed. Continue?"
+        if not confirm(question=prompt, default=False):
+            abort("Canceled.")
 
     output = "/tmp/{}.tar.gz".format(version)
     prefix = "{}/".format(version)
@@ -87,7 +85,7 @@ def build(treeish="head"):
 
 
 @task
-def deploy(treeish="head"):
+def deploy(treeish='head'):
     """Build and deploy a release."""
     local_path = build(treeish)
     tarball_name = local_path.split('/').pop()

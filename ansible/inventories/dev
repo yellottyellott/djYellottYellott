@@ -1,0 +1,5 @@
+[vm]
+10.1.1.111
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
