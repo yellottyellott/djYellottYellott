@@ -4,7 +4,6 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.network "private_network", ip: "10.1.1.111"
-
   config.ssh.paranoid = false
   config.ssh.forward_agent = true
 

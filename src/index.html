@@ -2,9 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    body {
+      margin: 0;
+      background-color: #1d1f21;
+      font-family: "Monaco";
+      color: #c5c8c6; font-size: 14px;
+      -webkit-text-size-adjust: 100%;
+    }
+    .container {
+      width: 70%; height:70vh;
+      position: fixed; top: 15%; left: 15%;
+      display: flex; justify-content: center;
+    }
+    .item { align-self: center; }
+    .item-bottom { align-self: flex-end; }
+    .red { color: #cc6666; }
+    .orange { color: #de935f; }
+    .yellow { color: #f0c674; }
+    .green { color: #b5bd68; }
+    .blue { color: #81a2be; }
+    .purple { color: #b294bb; }
+    </style>
   </head>
   <body>
-    <h1>Hi, I'm Erick!</h1>
-    <p>I'm a software engineer for BuzzFeed in Austin, TX.</p>
+    <div class="container">
+      <div class="item">
+        <p>hi! i'm <span class="orange">erick</span>.</p>
+        <p>i'm a <span class="green">software engineer</span> for <span class="red">buzzfeed</span> in <span class="blue">austin, tx</span>.</p>
+        <p>say <a href="mailto:hi@yellottyellott.com"><span class="yellow">hi@yellottyellott.com</span></a>.</p>
+      </div>
+      <div class="item item-bottom">
+        <p><span class="purple">(:</span></p>
+      </div>
+    </div>
   </body>
 </html>
