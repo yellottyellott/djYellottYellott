@@ -7,21 +7,23 @@
     <meta name="description" content="Erick's crappy website.'">
 
     <title>super cool website 9000!</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
     <style>
+    html, body { width: 100%; height: 100%;}
     body {
-      margin: 0;
       background-color: #1d1f21;
       font-family: "Monaco";
       color: #c5c8c6; font-size: 14px;
       -webkit-text-size-adjust: 100%;
+      display: flex; justify-content: center; align-items: center;
     }
-    .container {
-      width: 70%; height:70vh;
-      position: fixed; top: 15%; left: 15%;
-      display: flex; justify-content: center;
+    div { width: 100%; }
+    a { text-decoration: none; border-bottom: 1.5px dashed; }
+    #content {
+      width: 70%; height: 70%;
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
     }
-    .item { align-self: center; }
-    .item-bottom { align-self: flex-end; }
+    #footer { text-align: right; align-self: flex-end; }
     .red { color: #cc6666; }
     .orange { color: #de935f; }
     .yellow { color: #f0c674; }
@@ -31,17 +33,15 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="item">
-        <p>hi! i'm <span class="orange">erick</span>.</p>
-        <p>i'm a <span class="green">software engineer</span> for <span class="red">buzzfeed</span> in <span class="blue">austin, tx</span>.</p>
-        <p>say <a class="yellow" href="mailto:hi@yellottyellott.com">hi@yellottyellott.com</a>.</p>
+    <div id="content">
+      <div>
+          <p>hi! i'm <span class="orange">erick</span>.</p>
+          <p>i'm a <span class="green">software engineer</span> for <span class="red">buzzfeed</span> in <span class="blue">austin, tx</span>.</p>
+          <p>say <a class="yellow" href="mailto:hi@yellottyellott.com">hi@yellottyellott.com</a>.</p>
       </div>
-      <div class="item item-bottom">
-        <p>
-          <a class="purple" href="https://github.com/yellottyellott">github</a>
-          <a class="purple" href="https://www.linkedin.com/in/yellottyellott/">linkedin</a>
-        </p>
+      <div id="footer">
+        <a class="purple" href="https://github.com/yellottyellott">github</a>
+        <a class="purple" href="https://www.linkedin.com/in/yellottyellott/">linkedin</a>
       </div>
     </div>
   </body>
